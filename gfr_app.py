@@ -1,6 +1,8 @@
 # gfr_app.py  (top-level entry for your Streamlit multipage app)
 
 import streamlit as st
+from utils_nav import render_sidebar
+render_sidebar()
 
 # Page config (do this before drawing anything)
 st.set_page_config(
