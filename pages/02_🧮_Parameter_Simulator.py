@@ -9,6 +9,8 @@ div.block-container {
 
 
 import streamlit as st
+from utils_nav import render_sidebar
+render_sidebar()
 from physiology import HemodynamicsInput, compute_hemodynamics
 
 st.title("Hemodynamic Parameter Manipulation")
