@@ -1,3 +1,6 @@
+from utils_nav import render_sidebar
+render_sidebar()
+
 st.markdown("""
 <style>
 footer {visibility: hidden;}
