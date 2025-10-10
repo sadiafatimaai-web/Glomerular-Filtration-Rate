@@ -16,26 +16,6 @@ You can either **download the worksheet** or **generate random cases** to solve!
 """)
 
 # --------------------------------------------------
-# Optional PDF Worksheet
-# --------------------------------------------------
-from pathlib import Path
-pdf_path = Path("assets/GFR_Worksheet.pdf")
-with st.expander("📄 Download a printable worksheet (optional)", expanded=False):
-    if pdf_path.exists():
-        with open(pdf_path, "rb") as f:
-            st.download_button(
-                "Download Worksheet (PDF)",
-                f,
-                file_name="GFR_Worksheet.pdf",
-                mime="application/pdf",
-                use_container_width=True,
-            )
-    else:
-        st.info("Upload your worksheet to `assets/GFR_Worksheet.pdf` to enable this feature.")
-
-st.divider()
-
-# --------------------------------------------------
 # Function to simulate physiology
 # --------------------------------------------------
 def simulate_case():
