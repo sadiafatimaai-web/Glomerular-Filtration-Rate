@@ -1,49 +1,43 @@
 # utils_nav.py
 import streamlit as st
+import os
 
-# Adjust labels/paths if you rename files
+# Update labels/paths if you renamed files differently
 PAGES = [
     ("🏠 Home", "gfr_app.py"),
-    ("📘 Introduction", "pages/01_📘_GFR_Introduction.py"),
-    ("🧮 Parameter Simulator", "pages/02_🧮_Parameter_Simulator.py"),
-    ("🧠 Autoregulation", "pages/03_🧠_Autoregulation.py"),
-    ("⚡ Quick Scenarios", "pages/06_⚡_Quick_Scenarios.py"),
-    ("📝 Cases & Worksheet", "pages/05_📝_Cases_and_Worksheet.py"),
-    ("🎞️ Videos & Slides", "pages/04_🎞️_Videos_and_Slides.py"),
+    ("📘 Introduction", "pages/01_Intro.py"),
+    ("🧮 Parameter Simulator", "pages/02_Parameter_Simulator.py"),
+    ("🧠 Autoregulation", "pages/03_Autoregulation.py"),
+    ("⚡ Quick Scenarios", "pages/06_Quick_Scenarios.py"),
+    ("📝 Cases & Worksheet", "pages/05_Cases_and_Worksheet.py"),
+    ("🎞️ Videos & Slides", "pages/04_Videos_and_Slides.py"),
 ]
-
-def _has(attr: str) -> bool:
-    return hasattr(st, attr)
 
 def render_sidebar():
     with st.sidebar:
         st.markdown("### 🧭 Navigation")
-        st.caption(f"Streamlit version: **{st.__version__}**")
+        st.caption(f"Streamlit {st.__version__}")
 
-        # Preferred: Streamlit ≥ 1.26 supports page_link
-        if _has("page_link"):
-            for label, path in PAGES:
-                st.page_link(path, label=label)
-            st.markdown("---")
-            st.caption("Developed by **Dr Sadia Fatima** • October 2025")
-            return
+        # Show a button for each page and verify the target exists
+        for label, path in PAGES:
+            if not os.path.exists(path):
+                st.error(f"Missing: {path}")
+                continue
 
-        # Fallback A: radio + switch_page (Streamlit ≥ 1.22)
-        labels = [lbl for lbl, _ in PAGES]
-        choice = st.radio("Go to:", labels, label_visibility="collapsed")
-        target_path = dict(PAGES)[choice]
+            if st.button(label, use_container_width=True):
+                try:
+                    # Works on Streamlit Cloud when pages/ is in place
+                    st.switch_page(path)
+                except Exception as e:
+                    st.warning(
+                        f"Could not switch to **{label}**.\n"
+                        f"Path: `{path}`\nError: {e}\n\n"
+                        "Open it from Streamlit's default Pages menu for now."
+                    )
 
-        if _has("switch_page"):
-            if st.button("Go", use_container_width=True):
-                st.switch_page(target_path)
-        else:
-            # Fallback B: show clickable Markdown links (older versions)
-            st.warning(
-                "Your Streamlit is older, so instant switching isn't available. "
-                "Use the default Pages menu or click a link below."
-            )
-            for label, path in PAGES:
-                st.markdown(f"- [{label}]({path})")
+        st.markdown("---")
+        st.caption("Developed by **Dr Sadia Fatima** • October 2025")
+
 
         st.markdown("---")
         st.caption("Developed by **Dr Sadia Fatima** • October 2025")
