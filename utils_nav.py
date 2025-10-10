@@ -46,4 +46,4 @@ def render_sidebar():
                     )
 
         st.markdown("---")
-        st.caption("Developed by **Dr Sadia Fatima**")
+        st.caption("Built with Streamlit. Content and code developed by Dr. Sadia Fatima with assistance from an AI coding/copilot (OpenAI)*")
