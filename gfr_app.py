@@ -76,3 +76,20 @@ with footer_col2:
     Developed by <b>Dr Sadia Fatima</b> • October 2025
     </div>
     """, unsafe_allow_html=True)
+import streamlit as st
+from utils_nav import render_sidebar
+
+st.set_page_config(page_title="GFR Physiology Simulator", page_icon="🫘", layout="wide")
+
+# ← LEFT NAV WORKS
+render_sidebar()
+
+st.markdown("""
+<div style="background:linear-gradient(90deg,#1a73e8,#5b8def);padding:28px;border-radius:16px;color:white;">
+  <h1 style="margin:0;">🫘 GFR Physiology Simulator</h1>
+  <p style="margin:8px 0 0 0;font-size:18px;">Interactive Learning Platform for First-Year Medical Students</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("#### Developed by **Dr Sadia Fatima** — *October 2025*")
+# ... rest of your home content ...
