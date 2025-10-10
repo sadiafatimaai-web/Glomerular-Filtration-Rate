@@ -1,6 +1,7 @@
-streamlit>=1.26
+streamlit>=1.33
 pandas
 numpy
 plotly
 qrcode
 pillow
+
