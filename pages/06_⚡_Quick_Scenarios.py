@@ -2,11 +2,11 @@
 import streamlit as st
 import pandas as pd
 
-# Try to use your physiology module if available; otherwise use a light fallback.
+# Try to use your physiology module if available; otherwise use our calibrated fallback.
 try:
     from physiology import (
-        compute_outputs as _physio_compute,      # returns dict: GFR,RPF,FF,Pgc,NFP,RBF
-        DEFAULT_SCENARIOS as _PHYSIO_SCENARIOS,  # dict of scenarios -> param dict
+        compute_outputs as _physio_compute,      # should return dict: GFR,RPF,FF,Pgc,NFP,RBF
+        DEFAULT_SCENARIOS as _PHYSIO_SCENARIOS,  # optional dict of scenarios -> params
     )
     HAVE_PHYSIO = True
 except Exception:
@@ -20,37 +20,68 @@ render_sidebar()
 st.title("⚡ Quick Scenarios")
 st.caption("Pick a scenario, tweak parameters, and visualize the impact on GFR, RPF, FF, and key pressures.")
 
-# ---------------- Baseline + Scenarios ----------------
+# ---------------- Baseline (calibrated) ----------------
+# Baseline chosen to hit ~GFR 120, RPF 650, FF ~19% with our fallback model below.
 BASELINE = {
-    "MAP": 100.0, "Ra": 1.0, "Re": 2.0, "Pbs": 10.0, "Kf": 12.0,
-    "pi_gc": 25.0, "Hct": 45.0,
+    "MAP": 100.0,   # mmHg
+    "Ra": 1.0,      # relative
+    "Re": 2.0,      # relative
+    "Pbs": 10.0,    # mmHg
+    "Kf": 6.0,      # mL/min/mmHg  (calibrated)
+    "pi_gc": 25.0,  # mmHg
+    "Hct": 45.0,    # %
 }
 
+# Default scenarios (used if physiology.DEFAULT_SCENARIOS not provided)
+DEFAULT_SCENARIOS = {
+    "Normal": {**BASELINE},
+    "Increased Ra": {**BASELINE, "Ra": 2.5},          # Afferent constriction -> ↓RPF, ↓Pgc -> ↓GFR, ↓FF
+    "Mild Re Increase": {**BASELINE, "Re": 3.5},      # Mild efferent constriction -> ↑Pgc, ↓RPF -> FF↑ (GFR ≈ preserved)
+    "Severe Re Increase": {**BASELINE, "Re": 5.0},    # Strong efferent constriction -> Pgc↑ a lot, RPF↓ -> FF↑↑
+    "Decreased Kf": {**BASELINE, "Kf": 3.0},          # Filter coefficient drop -> ↓GFR even if pressures ok
+    "Increased Bowman": {**BASELINE, "Pbs": 25.0},    # Obstruction -> backpressure -> ↓NFP -> ↓GFR
+    "Decreased MAP": {**BASELINE, "MAP": 70.0},       # Hypotension -> ↓Pgc, ↓RPF -> ↓GFR
+}
+
+SCENARIOS = dict(DEFAULT_SCENARIOS)
 if HAVE_PHYSIO:
-    SCENARIOS = dict(_PHYSIO_SCENARIOS)
-else:
-    SCENARIOS = {
-        "Normal": {**BASELINE},
-        "Increased Ra": {**BASELINE, "Ra": 2.5},
-        "Mild Re Increase": {**BASELINE, "Re": 3.5},
-        "Severe Re Increase": {**BASELINE, "Re": 5.0},
-        "Decreased Kf": {**BASELINE, "Kf": 6.0},
-        "Increased Bowman": {**BASELINE, "Pbs": 25.0},
-        "Decreased MAP": {**BASELINE, "MAP": 70.0},
-    }
+    try:
+        # If your physiology file defines scenarios, use them; else keep defaults above.
+        SCENARIOS = dict(_PHYSIO_SCENARIOS)
+    except Exception:
+        pass
 
-# ---------------- Fallback physiology model ----------------
+# ---------------- Calibrated fallback physiology model ----------------
 def _fallback_compute(p: dict) -> dict:
-    MAP, Ra, Re = p["MAP"], p["Ra"], p["Re"]
-    Pbs, Kf, pi_gc, Hct = p["Pbs"], p["Kf"], p["pi_gc"], p["Hct"]
+    """
+    Calibrated toy model to keep numbers in realistic ranges while preserving causal trends.
+    - Pgc is tied to MAP and the Re/(Ra+Re) ratio (efferent → raises Pgc).
+    - RPF ~ MAP / (Ra + 1.5*Re) scaled to ~650 mL/min at baseline (MAP=100, Ra=1, Re=2).
+    - NFP = Pgc - Pbs - πgc
+    - GFR = Kf * NFP (with Kf baseline 6 → GFR ~120 when NFP ~20)
+    - RBF = RPF / (1 - Hct)
+    """
+    MAP, Ra, Re = float(p["MAP"]), float(p["Ra"]), float(p["Re"])
+    Pbs, Kf, pi_gc, Hct = float(p["Pbs"]), float(p["Kf"]), float(p["pi_gc"]), float(p["Hct"])
 
-    total_R = max(Ra + 0.8 * Re, 0.1)
-    Pgc = max(35.0, min(99.0, MAP * (Re / (Ra + Re)) + 35 * (1 / total_R - 0.3)))
-    NFP = Pgc - Pbs - pi_gc
+    # 1) Pgc: base + efferent ratio + mild MAP influence; clamp to plausible range.
+    #    Baseline (MAP=100, Ra=1, Re=2) -> ratio = 2/3 → Pgc ≈ 56 mmHg
+    eff_ratio = Re / max(1e-6, (Ra + Re))
+    Pgc = 48.0 + 12.0 * eff_ratio + 0.12 * (MAP - 100.0)
+    Pgc = min(max(Pgc, 40.0), 80.0)
 
-    RPF = max(50.0, (MAP / total_R) * 4.5)
-    RBF = RPF / max(1e-6, (1 - Hct / 100.0))
-    GFR = max(0.0, Kf * NFP)
+    # 2) RPF: scale so baseline ~650 mL/min (MAP=100, Ra=1, Re=2 ⇒ denom = 1 + 1.5*2 = 4)
+    denom = max(0.1, Ra + 1.5 * Re)
+    RPF = (MAP / denom) * 26.0  # 100/4*26 = 650 baseline
+
+    # 3) NFP and GFR
+    NFP = Pgc - Pbs - pi_gc                    # baseline ~56-10-25 = 21
+    GFR = max(0.0, Kf * NFP)                  # baseline 6*21 = 126 mL/min
+
+    # 4) RBF via hematocrit
+    RBF = RPF / max(1e-6, (1.0 - Hct / 100.0))
+
+    # 5) Filtration fraction
     FF = (GFR / RPF) * 100.0 if RPF > 0 else 0.0
 
     return {"GFR": GFR, "RPF": RPF, "RBF": RBF, "FF": FF, "Pgc": Pgc, "NFP": NFP}
@@ -78,7 +109,7 @@ with st.expander("🧪 Tweak parameters (optional)", expanded=False):
 
     c4, c5, c6 = st.columns(3)
     params["Pbs"]   = c4.slider("Pbs [mmHg]", 5.0, 40.0, float(params["Pbs"]), 1.0)
-    params["Kf"]    = c5.slider("Kf [mL/min/mmHg]", 2.0, 20.0, float(params["Kf"]), 0.5)
+    params["Kf"]    = c5.slider("Kf [mL/min/mmHg]", 2.0, 12.0, float(params["Kf"]), 0.5)  # calibrated range
     params["pi_gc"] = c6.slider("πgc [mmHg]", 15.0, 35.0, float(params["pi_gc"]), 1.0)
 
     params["Hct"]   = st.slider("Hematocrit (%)", 20.0, 60.0, float(params["Hct"]), 1.0)
@@ -97,7 +128,7 @@ m5.metric("NFP (mmHg)", f"{out_sel['NFP']:.1f}", f"{out_sel['NFP']-out_base['NFP
 
 st.divider()
 
-# ---------------- Selected vs Baseline chart (built-in) ----------------
+# ---------------- Selected vs Baseline chart ----------------
 st.subheader("📊 Selected vs Baseline")
 
 chart_df = pd.DataFrame(
@@ -107,7 +138,7 @@ chart_df = pd.DataFrame(
     },
     index=["GFR (mL/min)", "RPF (mL/min)", "FF (%)", "Pgc (mmHg)", "NFP (mmHg)"],
 )
-st.bar_chart(chart_df)  # uses Streamlit's native renderer (no extra deps)
+st.bar_chart(chart_df)
 
 # ---------------- Comparison table & download ----------------
 def row_for(name, p):
@@ -139,11 +170,13 @@ st.divider()
 
 with st.expander("🧠 Teaching Notes", expanded=False):
     st.markdown("""
-- **Afferent constriction (↑Ra)** → ↓Pgc → ↓NFP → ↓GFR and ↓RPF → **FF tends to fall**.
-- **Efferent constriction (↑Re)** → initial ↑Pgc → may preserve/raise **GFR** while **RPF falls** → **FF rises**.
-- **Obstruction (↑Pbs)** → ↓NFP → **↓GFR**.
-- **Decreased Kf** → **↓GFR** even if pressures are normal.
-- **Hematocrit (Hct)** affects **RBF** via plasma fraction: RBF = RPF/(1−Hct).
+- **Afferent constriction (↑Ra)** → ↓Pgc, ↓RPF → **↓NFP → ↓GFR**, **FF falls**.
+- **Efferent constriction (↑Re)** → ↑Pgc, ↓RPF → **FF rises**; GFR may be preserved or mildly ↑ at modest Re.
+- **Increased Bowman pressure (↑Pbs)** → backpressure → **↓NFP → ↓GFR**.
+- **Decreased Kf** → membrane/area loss → **↓GFR** even if pressures are normal.
+- **Lower MAP** → ↓Pgc and ↓RPF → **↓GFR**.
+- **RBF = RPF/(1−Hct)**; raising Hct lowers RBF at the same RPF.
 """)
+
 
 
