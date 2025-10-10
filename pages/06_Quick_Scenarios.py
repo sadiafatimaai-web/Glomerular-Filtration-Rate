@@ -1,10 +1,13 @@
 import streamlit as st
+import streamlit as st
+from utils_nav import render_sidebar
+
+st.set_page_config(page_title="GFR Physiology Simulator", page_icon="🫘", layout="wide")
+render_sidebar()
+
 import pandas as pd
 import plotly.express as px
 from physiology import HemodynamicsInput, compute_hemodynamics
-
-from utils_nav import render_sidebar
-render_sidebar()
 
 st.title("⚡ Quick Scenarios")
 st.caption("Compare different physiological and pathological scenarios side-by-side.")
