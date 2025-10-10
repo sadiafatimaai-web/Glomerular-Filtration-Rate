@@ -15,7 +15,8 @@ APP_TITLE = "GFR Physiology Simulator"
 APP_TAGLINE = "Interactive learning platform for medical students"
 
 # ⬇️ IMPORTANT: put your deployed URL here (e.g., "https://your-app.streamlit.app")
-APP_URL = "https://YOUR-DEPLOYED-APP-URL"
+APP_URL = "https://gfr-physiology-simulator.streamlit.app"
+
 
 st.set_page_config(page_title="Home — GFR Simulator", layout="wide")
 if USE_CUSTOM_SIDEBAR:
