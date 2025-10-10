@@ -3,6 +3,9 @@ import pandas as pd
 import plotly.express as px
 from physiology import HemodynamicsInput, compute_hemodynamics
 
+from utils_nav import render_sidebar
+render_sidebar()
+
 st.title("⚡ Quick Scenarios")
 st.caption("Compare different physiological and pathological scenarios side-by-side.")
 
