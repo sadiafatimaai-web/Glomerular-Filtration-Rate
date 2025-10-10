@@ -72,10 +72,4 @@ else:
         "or another `.pdf` inside the `assets/` folder."
     )
 
-    # Diagnostics to help troubleshoot
-    with st.expander("🔍 Show diagnostics"):
-        st.write("**Current working directory:**", str(root))
-        st.write("**Assets folder exists:**", assets_dir.exists())
-        if assets_dir.exists():
-            st.write("**Files in assets/:**", [p.name for p in assets_dir.glob('*')])
-        st.write("**Files in repo root:**", os.listdir(root))
+   
