@@ -2,7 +2,7 @@
 import streamlit as st
 import os
 
-# Update labels/paths if you renamed files differently
+# Page label and path pairs (ASCII paths to avoid OS issues)
 PAGES = [
     ("🏠 Home", "gfr_app.py"),
     ("📘 Introduction", "pages/01_Intro.py"),
@@ -16,30 +16,21 @@ PAGES = [
 def render_sidebar():
     with st.sidebar:
         st.markdown("### 🧭 Navigation")
-        st.caption(f"Streamlit {st.__version__}")
 
-        # Show a button for each page and verify the target exists
+        # Buttons + switch_page (reliable on Streamlit Cloud)
         for label, path in PAGES:
             if not os.path.exists(path):
-                st.error(f"Missing: {path}")
+                # show once on missing file to help diagnose
+                st.error(f"Missing file: {path}")
                 continue
-
             if st.button(label, use_container_width=True):
                 try:
-                    # Works on Streamlit Cloud when pages/ is in place
                     st.switch_page(path)
                 except Exception as e:
                     st.warning(
-                        f"Could not switch to **{label}**.\n"
-                        f"Path: `{path}`\nError: {e}\n\n"
-                        "Open it from Streamlit's default Pages menu for now."
+                        f"Could not open **{label}** at `{path}`.\n\n"
+                        "Please use Streamlit’s Pages menu on the left."
                     )
 
         st.markdown("---")
-        st.caption("Developed by **Dr Sadia Fatima** • October 2025")
-
-
-        st.markdown("---")
-        st.caption("Developed by **Dr Sadia Fatima** • October 2025")
-
-
+        st.caption("Developed by **Dr Sadia Fatima**")
