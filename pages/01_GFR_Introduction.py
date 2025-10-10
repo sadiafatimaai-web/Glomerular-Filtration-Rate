@@ -1,7 +1,10 @@
-import streamlit as st
 
+import streamlit as st
 from utils_nav import render_sidebar
+
+st.set_page_config(page_title="GFR Physiology Simulator", page_icon="🫘", layout="wide")
 render_sidebar()
+
 
 st.title("Hemodynamic Parameter Manipulation")
 
