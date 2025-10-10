@@ -1,5 +1,7 @@
 import streamlit as st
+
 from utils_nav import render_sidebar
+render_sidebar()
 
 st.title("Hemodynamic Parameter Manipulation")
 
