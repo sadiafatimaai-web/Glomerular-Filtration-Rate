@@ -1,3 +1,14 @@
+import streamlit as st
+from utils_nav import render_sidebar
+
+st.title("Hemodynamic Parameter Manipulation")
+
+# ← LEFT NAV WORKS
+render_sidebar()
+
+# ... rest of your simulator code ...
+
+
 st.markdown("""
 <style>
 footer {visibility: hidden;}
