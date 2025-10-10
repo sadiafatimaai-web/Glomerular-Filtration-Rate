@@ -1,28 +1,27 @@
-# gfr_app.py  — Landing page (no extra Navigate section)
+# gfr_app.py — Landing page
 import base64
 from io import BytesIO
 import streamlit as st
 
-# Optional: if you’re using the custom sidebar component
+# If you use the custom sidebar component, it will render; otherwise it’s skipped.
 try:
     from utils_nav import render_sidebar
     USE_CUSTOM_SIDEBAR = True
 except Exception:
     USE_CUSTOM_SIDEBAR = False
 
-# ------------ CONFIG ------------
+# ---------- CONFIG ----------
 APP_TITLE = "GFR Physiology Simulator"
 APP_TAGLINE = "Interactive learning platform for medical students"
 
-# ⬇️ IMPORTANT: put your deployed URL here (e.g., "https://your-app.streamlit.app")
-APP_URL = "https://gfr-physiology-simulator.streamlit.app"
-
+# Your deployed URL (QR will be clickable)
+APP_URL = "https://glomerular-filtration-rate-n34kxzj2bd7uruszragr3d.streamlit.app/"
 
 st.set_page_config(page_title="Home — GFR Simulator", layout="wide")
 if USE_CUSTOM_SIDEBAR:
     render_sidebar()
 
-# ----- QR utilities -----
+# ---------- QR helpers ----------
 def _make_qr_png_bytes(url: str) -> bytes:
     import qrcode
     img = qrcode.make(url)
@@ -35,7 +34,7 @@ def _qr_img_tag(url: str, width_px: int = 128) -> str:
     b64 = base64.b64encode(qr_bytes).decode("ascii")
     return f'<a href="{url}" target="_blank"><img src="data:image/png;base64,{b64}" width="{width_px}" style="border-radius:10px"/></a>'
 
-# ------------ HEADER ------------
+# ---------- HEADER ----------
 left, right = st.columns([3.5, 1])
 with left:
     st.markdown(
@@ -50,23 +49,20 @@ with left:
         unsafe_allow_html=True,
     )
 with right:
-    if APP_URL and "YOUR-DEPLOYED-APP-URL" not in APP_URL:
-        st.markdown(
-            f"""
-            <div style="text-align:center; padding-top:6px;">
-                {_qr_img_tag(APP_URL, 128)}
-                <div style="font-size:12px; color:#666; margin-top:6px;">🔗 Click or Scan</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    else:
-        st.info("Add your deployed URL in `APP_URL` to show a clickable QR.")
+    st.markdown(
+        f"""
+        <div style="text-align:center; padding-top:6px;">
+            {_qr_img_tag(APP_URL, 128)}
+            <div style="font-size:12px; color:#666; margin-top:6px;">🔗 Click or Scan</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 st.write("")
 st.markdown("**Developed by Dr Sadia Fatima**")
 
-# ------------ OVERVIEW + QUICK STATS ------------
+# ---------- OVERVIEW + QUICK STATS ----------
 c1, c2 = st.columns([1.3, 1])
 with c1:
     st.markdown(
@@ -88,12 +84,10 @@ with c2:
     k1.metric("Clinical Cases", "4")
     k2.metric("Scenarios", "7")
     k3.metric("Parameters", "6")
-    if APP_URL and "YOUR-DEPLOYED-APP-URL" not in APP_URL:
-        st.link_button("Open app in new tab", APP_URL, use_container_width=True)
 
 st.divider()
 
-# ------------ LEARNING PATH ------------
+# ---------- LEARNING PATH ----------
 st.markdown(
     """
     ### Suggested Learning Path
@@ -106,7 +100,7 @@ st.markdown(
     """
 )
 
-# ------------ REFERENCES ------------
+# ---------- REFERENCES ----------
 st.divider()
 st.markdown(
     """
@@ -118,5 +112,6 @@ st.markdown(
 )
 
 st.caption("Use the left sidebar (Pages) to navigate.")
+
 
 
