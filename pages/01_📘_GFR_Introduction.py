@@ -6,7 +6,6 @@ st.set_page_config(page_title="GFR — Introduction", layout="wide")
 render_sidebar()
 
 st.title("💧 Glomerular Filtration Rate — Concepts and Interactive Simulator")
-st.markdown("#### Developed by **Dr Sadia Fatima**")
 
 st.divider()
 st.header("📖 Introduction")
