@@ -3,25 +3,20 @@ import base64
 from io import BytesIO
 import streamlit as st
 
-# If you use the custom sidebar component, it will render; otherwise it’s skipped.
 try:
     from utils_nav import render_sidebar
     USE_CUSTOM_SIDEBAR = True
 except Exception:
     USE_CUSTOM_SIDEBAR = False
 
-# ---------- CONFIG ----------
 APP_TITLE = "GFR Physiology Simulator"
 APP_TAGLINE = "Interactive learning platform for medical students"
-
-# Your deployed URL (QR will be clickable)
 APP_URL = "https://glomerular-filtration-rate-n34kxzj2bd7uruszragr3d.streamlit.app/"
 
 st.set_page_config(page_title="Home — GFR Simulator", layout="wide")
 if USE_CUSTOM_SIDEBAR:
     render_sidebar()
 
-# ---------- QR helpers ----------
 def _make_qr_png_bytes(url: str) -> bytes:
     import qrcode
     img = qrcode.make(url)
@@ -34,7 +29,6 @@ def _qr_img_tag(url: str, width_px: int = 128) -> str:
     b64 = base64.b64encode(qr_bytes).decode("ascii")
     return f'<a href="{url}" target="_blank"><img src="data:image/png;base64,{b64}" width="{width_px}" style="border-radius:10px"/></a>'
 
-# ---------- HEADER ----------
 left, right = st.columns([3.5, 1])
 with left:
     st.markdown(
@@ -59,10 +53,7 @@ with right:
         unsafe_allow_html=True,
     )
 
-st.write("")
-st.markdown("**Developed by Dr Sadia Fatima**")
-
-# ---------- OVERVIEW + QUICK STATS ----------
+# ---- Overview + stats ----
 c1, c2 = st.columns([1.3, 1])
 with c1:
     st.markdown(
@@ -87,7 +78,6 @@ with c2:
 
 st.divider()
 
-# ---------- LEARNING PATH ----------
 st.markdown(
     """
     ### Suggested Learning Path
@@ -100,18 +90,23 @@ st.markdown(
     """
 )
 
-# ---------- REFERENCES ----------
 st.divider()
 st.markdown(
     """
-    ### References (Textbooks)
-    - **Guyton and Hall Textbook of Medical Physiology**, 14th ed.  
-    - **Ganong's Review of Medical Physiology**, 26th ed.  
-    - **Sherwood's Human Physiology: From Cells to Systems**, 10th ed.  
+    ### References
+    **Textbooks**
+    - *Guyton and Hall Textbook of Medical Physiology*, 14th ed.  
+    - *Ganong’s Review of Medical Physiology*, 26th ed.  
+    - *Sherwood’s Human Physiology: From Cells to Systems*, 10th ed.  
+
+    **Online educators**
+    - *Ninja Nerd* (YouTube lecture series on renal physiology)  
+    - *Armando Hasudungan* (YouTube medical illustrator — kidney/renal playlists)
     """
 )
 
 st.caption("Use the left sidebar (Pages) to navigate.")
+
 
 
 
