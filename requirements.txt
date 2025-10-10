@@ -1,4 +1,6 @@
-streamlit==1.38.0
-plotly==5.23.0
-numpy==1.26.4
-pandas==2.2.2
+streamlit>=1.26
+pandas
+numpy
+plotly
+qrcode
+pillow
