@@ -1,5 +1,3 @@
-from utils_nav import render_sidebar
-render_sidebar()
 
 st.markdown("""
 <style>
@@ -12,6 +10,11 @@ div.block-container {
 
 
 import streamlit as st
+from utils_nav import render_sidebar
+
+st.set_page_config(page_title="GFR Physiology Simulator", page_icon="🫘", layout="wide")
+render_sidebar()
+
 import numpy as np
 import plotly.graph_objects as go
 from physiology import HemodynamicsInput, compute_hemodynamics
