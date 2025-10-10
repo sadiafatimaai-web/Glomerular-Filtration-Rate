@@ -12,7 +12,7 @@ st.set_page_config(page_title="Cases & Worksheet — GFR", layout="wide")
 st.header("🧪 Cases & Worksheet")
 st.markdown("""
 Practice your understanding of renal hemodynamics and glomerular filtration.  
-You can either **download the worksheet** or **generate random cases** to solve!
+You can **generate random cases** to solve!
 """)
 
 # --------------------------------------------------
