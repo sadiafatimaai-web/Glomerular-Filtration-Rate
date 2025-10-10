@@ -1,4 +1,3 @@
-# pages/04_Videos_and_Slides.py
 import streamlit as st
 from utils_nav import render_sidebar
 import base64
@@ -10,64 +9,73 @@ render_sidebar()
 
 st.title("🎞️ GFR Videos & Slides")
 
-# ---------------- Videos ---------------- #
-st.markdown("### 🎥 Lecture Videos")
+# ---------------- 🎥 VIDEOS ---------------- #
+st.markdown("### Lecture Videos")
+
 VIDEO_URLS = [
     "https://www.youtube.com/watch?v=SVqSqPOcahY&t=1321s",
     "https://youtu.be/8Mn0IUCTg3U?si=k0_nwQowIMuMFKvY",
 ]
+
 for i, url in enumerate(VIDEO_URLS, start=1):
     st.markdown(f"#### ▶️ Video {i}")
     st.video(url)
     st.markdown("---")
 
-# ---------------- Slides (auto-detect) ---------------- #
-st.subheader("📑 Slides")
+# ---------------- 📑 SLIDES ---------------- #
+st.subheader("Slides")
 
-def _pdf_iframe(pdf_bytes: bytes, height: int = 700):
+def show_pdf(pdf_path: Path):
+    """Embed and download PDF."""
+    pdf_bytes = pdf_path.read_bytes()
     b64 = base64.b64encode(pdf_bytes).decode("utf-8")
+
+    st.download_button(
+        "📥 Download slides (PDF)",
+        data=pdf_bytes,
+        file_name=pdf_path.name,
+        mime="application/pdf",
+        use_container_width=True,
+    )
+
+    st.markdown(
+        f'<a href="data:application/pdf;base64,{b64}" target="_blank">🔗 Open in new tab</a>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown("#### Preview")
     st.markdown(
         f"""
-        <iframe src="data:application/pdf;base64,{b64}"
-                width="100%" height="{height}px"
+        <iframe src="data:application/pdf;base64,{b64}" width="100%" height="700px"
                 style="border:1px solid #e6e6e6;border-radius:8px;"></iframe>
         """,
         unsafe_allow_html=True,
     )
 
+# Locate PDF (works even if name or case differs)
 root = Path(".").resolve()
-assets = root / "assets"
+assets_dir = root / "assets"
 
-# Try common locations in order:
-candidates = [
-    assets / "GFR_slides.pdf",                   # your intended path
-    assets / "gfr_slides.pdf",                   # case variation
-    *sorted(assets.glob("*.pdf")) if assets.exists() else [],  # any pdf in assets/
-    root / "GFR_slides.pdf",                     # if placed at repo root
-    *sorted(root.glob("*.pdf")),                 # any pdf at root (fallback)
-]
+candidates = []
+if assets_dir.exists():
+    candidates = list(assets_dir.glob("*.pdf"))
+if not candidates:
+    candidates = list(root.glob("*.pdf"))
 
-chosen = next((p for p in candidates if p.exists()), None)
-
-if chosen:
-    pdf_bytes = chosen.read_bytes()
-    st.success(f"Loaded: **{chosen.relative_to(root)}**")
-    st.download_button("📥 Download slides (PDF)", pdf_bytes, file_name=chosen.name,
-                       mime="application/pdf", use_container_width=True)
-    st.markdown("#### Preview")
-    _pdf_iframe(pdf_bytes, height=700)
+if candidates:
+    pdf_path = candidates[0]
+    st.success(f"Loaded: **{pdf_path.relative_to(root)}**")
+    show_pdf(pdf_path)
 else:
     st.warning(
-        "Slides not found. I looked for:\n\n"
-        "- `assets/GFR_slides.pdf`\n"
-        "- any `*.pdf` inside `assets/`\n"
-        "- `GFR_slides.pdf` in the repo root\n"
-        "\nAdd your PDF to **assets/** (e.g., `assets/GFR_slides.pdf`) and rerun."
+        "Slides not found. Make sure your file is located at `assets/GFR_slides.pdf` "
+        "or another `.pdf` inside the `assets/` folder."
     )
 
-    # --- Diagnostics to help you see what's deployed ---
-    with st.expander("Show diagnostics"):
-        st.write("**Working directory:**", str(root))
-        st.write("**Exists assets/**:", assets.exists())
-        st.write("**Files in assets/**:", [p.name for p in assets.glob("*")] if assets.exists() else "assets/ missing")
+    # Diagnostics to help troubleshoot
+    with st.expander("🔍 Show diagnostics"):
+        st.write("**Current working directory:**", str(root))
+        st.write("**Assets folder exists:**", assets_dir.exists())
+        if assets_dir.exists():
+            st.write("**Files in assets/:**", [p.name for p in assets_dir.glob('*')])
         st.write("**Files in repo root:**", os.listdir(root))
