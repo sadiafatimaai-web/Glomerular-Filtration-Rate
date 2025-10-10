@@ -1,6 +1,3 @@
-from utils_nav import render_sidebar
-render_sidebar()
-
 st.markdown("""
 <style>
 footer {visibility: hidden;}
@@ -12,6 +9,11 @@ div.block-container {
 
 
 import streamlit as st
+from utils_nav import render_sidebar
+
+st.set_page_config(page_title="GFR Physiology Simulator", page_icon="🫘", layout="wide")
+render_sidebar()
+
 
 st.title("🎞️ Educational Videos and Slides")
 st.caption("Visual learning resources to deepen your understanding of glomerular filtration and renal physiology.")
