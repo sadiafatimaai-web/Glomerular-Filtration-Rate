@@ -1,6 +1,3 @@
-from utils_nav import render_sidebar
-render_sidebar()
-
 st.markdown("""
 <style>
 footer {visibility: hidden;}
@@ -10,8 +7,12 @@ div.block-container {
 </style>
 """, unsafe_allow_html=True)
 
-
 import streamlit as st
+from utils_nav import render_sidebar
+
+st.set_page_config(page_title="GFR Physiology Simulator", page_icon="🫘", layout="wide")
+render_sidebar()
+
 import pandas as pd
 from physiology import HemodynamicsInput, compute_hemodynamics
 
