@@ -66,26 +66,26 @@ st.markdown(
 # ─────────────────────────────
 st.subheader("🧮 The Starling Equation")
 
-st.markdown(
-    r"""
-**Net Filtration Pressure (NFP)**  
-\[
-\text{NFP} = (P_{gc} - P_{bs}) - (\pi_{gc} - \pi_{bs})
-\]
-Since \(\pi_{bs} \approx 0\) in normal conditions:
-\[
-\text{NFP} = P_{gc} - P_{bs} - \pi_{gc}
-\]
+st.markdown("**Net Filtration Pressure (NFP)**")
 
-**Example:** \( \text{NFP} = 55 - 10 - 25 = 20\ \text{mmHg} \)
+st.latex(r"NFP = (P_{gc} - P_{bs}) - (\pi_{gc} - \pi_{bs})")
 
-**Glomerular Filtration Rate (GFR)**  
-\[
-\text{GFR} = K_f \times \text{NFP}
-\]
-**Example:** \( \text{GFR} = 12\ \text{mL/min/mmHg} \times 10\ \text{mmHg} \approx 120\ \text{mL/min} \)
-"""
-)
+st.markdown("Since πbs ≈ 0 in normal conditions:")
+
+st.latex(r"NFP = P_{gc} - P_{bs} - \pi_{gc}")
+
+st.markdown("**Example Calculation:**")
+
+st.latex(r"NFP = 55 - 10 - 25 = 20\ \text{mmHg}")
+
+st.markdown("**Glomerular Filtration Rate (GFR)**")
+
+st.latex(r"GFR = K_f \times NFP")
+
+st.markdown("**Example Calculation:**")
+
+st.latex(r"GFR = 12\ \text{mL/min/mmHg} \times 10\ \text{mmHg} = 120\ \text{mL/min}")
+
 
 # ─────────────────────────────
 # 🔬 Factors Affecting Each Starling Force
