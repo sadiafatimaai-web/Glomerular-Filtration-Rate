@@ -7,12 +7,12 @@ PAGES = [
     ("🏠 Home", "gfr_app.py"),
     # If your file is emoji-named, use the emoji path on the next line:
     ("📘 Introduction", "pages/01_📘_GFR_Introduction.py"),
+    ("🎞️ Videos & Slides", "pages/04_🎞️_Videos_and_Slides.py"),
     ("🧮 Parameter Simulator", "pages/02_🧮_Parameter_Simulator.py"),
     ("🧠 Autoregulation", "pages/03_🧠_Autoregulation.py"),
     ("⚡ Quick Scenarios", "pages/06_⚡_Quick_Scenarios.py"),
     ("📝 Cases & Worksheet", "pages/05_📝_Cases_and_Worksheet.py"),
-    ("🎞️ Videos & Slides", "pages/04_🎞️_Videos_and_Slides.py"),
-]
+   ]
 
 def render_sidebar():
     # 🔒 Hide Streamlit's default "Pages" section
