@@ -23,9 +23,6 @@ with col2:
     st.markdown("<p style='text-align:center;'>Video 2: GFR Lecture Part 2</p>", unsafe_allow_html=True)
 
 st.divider()
-# Podcast
-st.subheader("🎧 Podcast")
-st.audio("assets/gfr_podcast.mp3")
 
 # ---------------- SLIDES ---------------- #
 st.subheader("📑 Lecture Slides")
