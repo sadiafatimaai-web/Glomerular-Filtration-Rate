@@ -23,27 +23,6 @@ with col2:
     st.markdown("<p style='text-align:center;'>Video 2: GFR Lecture Part 2</p>", unsafe_allow_html=True)
 
 # ───────────────────────────────────────────────
-# 🎧 Additional Video & Podcast (YouTube Embeds)
-# ───────────────────────────────────────────────
-st.divider()
-st.subheader("🎬 Extended Learning Resources")
-
-col3, col4 = st.columns(2)
-
-# --- Additional Teaching Video ---
-with col3:
-    st.video("https://youtu.be/ONWfkprMOps")   # replace with your video URL
-    st.markdown("<p style='text-align:center;'>Supplementary Video — Advanced GFR Concepts</p>", unsafe_allow_html=True)
-
-# --- Podcast as Video ---
-with col4:
-    st.video("https://youtu.be/aGn9IAsFqj8")  # replace with your podcast YouTube link
-    st.markdown("<p style='text-align:center;'>🎧 GFR Podcast — Clinical Relevance Discussion</p>", unsafe_allow_html=True)
-
-st.caption("Both resources are unlisted on YouTube and accessible for educational use. These were created using NotebookLM. You may watch either before class for reinforcement or revision.")
-
-
-# ───────────────────────────────────────────────
 # 🎧 Podcast Section
 # ───────────────────────────────────────────────
 st.divider()
@@ -65,6 +44,26 @@ if podcast_file:
     st.caption("Listen to this short podcast explaining basics of GFR regulation and Starling forces.The podcast was created using Gemini")
 else:
     st.warning("Podcast file not found in assets/. Please ensure 'gfr_podcast.wav' or 'gfr_podcast.m4a' is uploaded.")
+    
+# ───────────────────────────────────────────────
+# 🎧 Additional Video & Podcast (YouTube Embeds)
+# ───────────────────────────────────────────────
+st.divider()
+st.subheader("🎬 Extended Learning Resources")
+
+col3, col4 = st.columns(2)
+
+# --- Additional Teaching Video ---
+with col3:
+    st.video("https://youtu.be/ONWfkprMOps")   # replace with your video URL
+    st.markdown("<p style='text-align:center;'>Supplementary Video — Advanced GFR Concepts</p>", unsafe_allow_html=True)
+
+# --- Podcast as Video ---
+with col4:
+    st.video("https://youtu.be/aGn9IAsFqj8")  # replace with your podcast YouTube link
+    st.markdown("<p style='text-align:center;'>🎧 GFR Podcast — Clinical Relevance Discussion</p>", unsafe_allow_html=True)
+
+st.caption("Both resources are unlisted on YouTube and accessible for educational use. These were created using NotebookLM. You may watch either before class for reinforcement or revision.")
 
 
 # ───────────────────────────────────────────────
