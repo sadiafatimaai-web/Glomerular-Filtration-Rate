@@ -40,7 +40,7 @@ with col4:
     st.video("https://youtu.be/aGn9IAsFqj8")  # replace with your podcast YouTube link
     st.markdown("<p style='text-align:center;'>🎧 GFR Podcast — Clinical Relevance Discussion</p>", unsafe_allow_html=True)
 
-st.caption("Both resources are unlisted on YouTube and accessible for educational use. You may watch either before class for reinforcement or revision.")
+st.caption("Both resources are unlisted on YouTube and accessible for educational use. These were created using NotebookLM. You may watch either before class for reinforcement or revision.")
 
 
 # ───────────────────────────────────────────────
@@ -62,7 +62,7 @@ if podcast_file:
         ext = podcast_file.suffix.lower()
         audio_format = "audio/wav" if ext == ".wav" else "audio/mp4"
         st.audio(f.read(), format=audio_format)
-    st.caption("Listen to this short podcast explaining GFR regulation and Starling forces.")
+    st.caption("Listen to this short podcast explaining basics of GFR regulation and Starling forces.The podcast was created using Gemini")
 else:
     st.warning("Podcast file not found in assets/. Please ensure 'gfr_podcast.wav' or 'gfr_podcast.m4a' is uploaded.")
 
