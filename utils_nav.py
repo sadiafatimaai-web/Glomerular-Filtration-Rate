@@ -18,10 +18,15 @@ def render_sidebar():
 st.markdown(
     """
     <style>
-    /* Hide default Pages list */
-    div[data-testid="stSidebarNav"] { display: none !important; }
-    /* tighten spacing a bit */
-    section[data-testid="stSidebar"] { padding-top: 0.5rem; }
+    /* Hide default Streamlit Pages list */
+    div[data-testid="stSidebarNav"] {
+        display: none !important;
+    }
+
+    /* Tighten spacing */
+    section[data-testid="stSidebar"] {
+        padding-top: 0.5rem;
+    }
     </style>
     """,
     unsafe_allow_html=True,
