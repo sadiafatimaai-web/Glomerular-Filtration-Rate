@@ -15,18 +15,13 @@ PAGES = [
    ]
 
 def render_sidebar():
-  st.markdown(
+st.markdown(
     """
     <style>
-    /* Hide Streamlit's built-in navigation */
-    [data-testid="stSidebarNav"] {
-        display: none !important;
-    }
-
-    /* Keep the custom sidebar neat */
-    section[data-testid="stSidebar"] {
-        padding-top: 0.5rem;
-    }
+    /* Hide default Pages list */
+    div[data-testid="stSidebarNav"] { display: none !important; }
+    /* tighten spacing a bit */
+    section[data-testid="stSidebar"] { padding-top: 0.5rem; }
     </style>
     """,
     unsafe_allow_html=True,
